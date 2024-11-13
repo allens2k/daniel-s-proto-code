@@ -273,7 +273,7 @@ do{
 	bool hit=true;
 	while(hit==true){
     cout<<"do you want to hit?(type t for yes and f for no)"<<endl;
-
+                                                                            //fyi bug isolation is around here somewhere
 
 	char in;
 	cin>>in;
@@ -312,7 +312,7 @@ do{
 	}
 
 	}//hitsection end here
-	if((pcv<=21 && pcv>dcv)|| (pcv==21 && dcv>pcv)){
+	if((pcv<=21 && pcv>dcv)|| (pcv==21 && dcv>pcv)){    //won
 		cout<<"You just won:"<<m*29<<" dollars"<<endl;
 		cout<<"do you want to play again?(type y for yes and f for no):"<<endl;
 			char end;
@@ -330,6 +330,7 @@ continue;
 			exit(0);
 			}
 	}
+	//tie
 	if(pcv==dcv){
 		cout<<"tie";
 		 cout<<"do you want to stop playing?";
@@ -351,12 +352,12 @@ continue;
 		 			}
 
 	}
-
+//lose
 	if((dcv<=21 && dcv>pcv)|| (dcv==21 && pcv>dcv)){
 		cout<< "you just lost"<< m*-1<< " dollars"<<endl;
 
 
-			 cout<<"You just won:"<<m*29<<" dollars"<<endl;
+
 			 		cout<<"do you want to play again?(type y for yes and f for no):"<<endl;
 			 			char end;
 			 				cin>>end;
