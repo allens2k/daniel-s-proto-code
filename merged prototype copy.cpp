@@ -24,6 +24,7 @@ using namespace std;
 
 int main() {
 
+	//introduction
 	string name;
 		float mon;
 		cout << "Welcome to the Hands On Casino where we would like to get hands on with you!!" << endl;
@@ -50,6 +51,36 @@ do{
 
 }while(gametrack==1);
 	return 0;
+}
+
+char inputval(){
+	cout<<"do you want to hit?(type t for yes and f for no)"<<endl;
+	                                                                            //fyi bug isolation is around here somewhere
+
+		char in;
+		cin>>in;
+		while(in!='t' && in!='f'){
+			cout<<"you didn't type t or f. If you want to hit, type t. If you do not, type f"<<endl;
+			cin>>in;
+		}
+	if(in=='t'){
+		return 't';
+	}
+	else{
+		return 'f';
+	}
+}
+
+char endgame(){
+	cout<<"do you want to play again?(type t for yes and f for no):"<<endl;
+				char end=inputval();
+				if(end=='t'){
+	             return 't';
+				}
+				else{
+				cout<<"exiting game";
+				exit(0);
+				}
 }
 
 int carddraw(){
@@ -206,7 +237,7 @@ int game(float mon){
 
 	//deck of cards
 
-cout<<"im here";
+
 carddraw();
 
 carddraw();
@@ -271,16 +302,8 @@ do{
 
 
 	bool hit=true;
-	while(hit==true){
-    cout<<"do you want to hit?(type t for yes and f for no)"<<endl;
-                                                                            //fyi bug isolation is around here somewhere
-
-	char in;
-	cin>>in;
-	while(in!='t' && in!='f'){
-		cout<<"you didn't type t or f. If you want to hit, type t. If you do not, type f"<<endl;
-		cin>>in;
-	}
+	while(hit==true){                                                     //lets try to build user input
+    char in=inputval();
 
 	if(in=='t'){
 		int input=carddraw();
@@ -305,75 +328,41 @@ do{
 
 	}
 	else{
+
 		break;
 		 hit=false;
-      cout<<"im here hit false";
+
 
 	}
 
-	}//hitsection end here
+	}
+	//hitsection end here
+	cout<<"hello am at end";
+	cout<<"the value of pcv is"<<pcv;//i am not reaching the win condition
 	if((pcv<=21 && pcv>dcv)|| (pcv==21 && dcv>pcv)){    //won
 		cout<<"You just won:"<<m*29<<" dollars"<<endl;
-		cout<<"do you want to play again?(type y for yes and f for no):"<<endl;
-			char end;
-				cin>>end;
-				while(end!='y' && end!='f'){
-					cout<<"you didn't type y or f. If you want to play again, type y. If you do not, type f"<<endl;
-					cin>>end;
-				}
-			if(end=='y'){
-continue;
-			}
-			else{
-				cout<<"exiting game";
-			return 0;
-			exit(0);
-			}
+		char out=endgame();
+		if(out=='t'){
+			continue;
+		}
 	}
 	//tie
 	if(pcv==dcv){
 		cout<<"tie";
-		 cout<<"do you want to stop playing?";
-		 cout<<"You just won:"<<m*29<<" dollars"<<endl;
-		 		cout<<"do you want to play again?(type y for yes and f for no):"<<endl;
-		 			char end;
-		 				cin>>end;
-		 				while(end!='y' && end!='f'){
-		 					cout<<"you didn't type y or f. If you want to play again, type y. If you do not, type f"<<endl;
-		 					cin>>end;
-		 				}
-		 			if(end=='y'){
-		 continue;
-		 			}
-		 			else{
-		 				cout<<"exiting game";
-		 			return 0;
-		 			exit(0);
-		 			}
+		char out=endgame();
+		if(out=='t'){
+		continue;
+				}
+
 
 	}
 //lose
-	if((dcv<=21 && dcv>pcv)|| (dcv==21 && pcv>dcv)){
+	if((dcv<=21 && dcv>pcv)|| (dcv==21 && pcv>dcv)){          //this is not working
 		cout<< "you just lost"<< m*-1<< " dollars"<<endl;
-
-
-
-			 		cout<<"do you want to play again?(type y for yes and f for no):"<<endl;
-			 			char end;
-			 				cin>>end;
-			 				while(end!='y' && end!='f'){
-			 					cout<<"you didn't type y or f. If you want to play again, type y. If you do not, type f"<<endl;
-			 					cin>>end;
-			 				}
-			 			if(end=='y'){
-			 continue;
-			 			}
-			 			else{
-			 				cout<<"exiting game";
-			 			return 0;
-			 			exit(0);
-			 			}
-
+		char out=endgame();
+				if(out=='t'){
+				continue;
+						}
 
 	}
 
