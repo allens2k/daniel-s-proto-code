@@ -5,20 +5,51 @@
 // Copyright   : Your copyright notice
 // Description : Hello World in C++, Ansi-style
 //============================================================================
+
+
 #include <iostream>
 #include <vector>
 #include <ctime>
 #include <random>
 using namespace std;
 
+
+class Blackjack{
+public:
+
+void setup();
+void setmon(float);
+char hitloop();
+char wincond();
 int carddraw();
-int game(float mon);
 string cardtype(int c);
 int cardtypev(int c);
+char inputval();
+char inputvalend();
+char endgame();
 
-//have random number vector with size 25
-//loop with random number generator
-//pass random number vector stuff into the card vector --this may be a bad idea how would draw work
+
+private:
+int dcv;
+int pcv;
+int pic1;
+int pic2;
+vector<string>player;
+int d1;
+int d2;
+vector<string>dealer;
+float mon;
+float winnings;
+};
+
+
+
+
+//need card clear functoin
+
+
+
+
 #include <iostream>
 using namespace std;
 
@@ -26,37 +57,44 @@ int main() {
 
 	//introduction
 	string name;
-		float mon;
+		float money;
 		cout << "Welcome to the Hands On Casino where we would like to get hands on with you!!" << endl;
 		cout<<"What is your name dear customer?"<<endl;
 		cin>>name;
 		cout<<"Hello "<<name<<". How much money do you want to spend at our fine establishment($1 minimum bet):";
-		cin>>mon;
-		while(mon<1){
+		cin>>money;
+		while(money<1){
 			cout<<"$1 is required to make a bet. Please input the amount of money you want to spend:";
-			cin>>mon;
+			cin>>money;
 		}
-		cout<<"You entered "<<mon<<endl;
+		cout<<"You entered "<<money<<endl;
+     Blackjack game;
+     game.setmon(money);
+     char gameloop1='t';    //change these values to char
+     char gameloop2='t';
 
+	 do{
 
-   // cout<<carddraw();
-   // int c=carddraw(); either use scrand everytime a card is called or tweak new random number generator
-int gametrack=1;
-   // cout<<cardtype(c);
+     game.setup();
+     do{
 
-do{
-	gametrack=game(mon);
+     gameloop2=game.hitloop();
 
+     }while(gameloop2=='t');
 
+      game.wincond();
 
-}while(gametrack==1);
+	 }while(gameloop1=='t');
+
 	return 0;
 }
 
-char inputval(){
-	cout<<"do you want to hit?(type t for yes and f for no)"<<endl;
-	                                                                            //fyi bug isolation is around here somewhere
 
+
+char Blackjack::inputval(){
+
+	                                                                            //fyi bug isolation is around here somewhere
+	cout<<"do you want to hit?(type t for yes and f for no)"<<endl;
 		char in;
 		cin>>in;
 		while(in!='t' && in!='f'){
@@ -69,21 +107,42 @@ char inputval(){
 	else{
 		return 'f';
 	}
+
 }
 
-char endgame(){
+char Blackjack::inputvalend(){
+
+	                                                                            //fyi bug isolation is around here somewhere
 	cout<<"do you want to play again?(type t for yes and f for no):"<<endl;
-				char end=inputval();
+		char in;
+		cin>>in;
+		while(in!='t' && in!='f'){
+			cout<<"you didn't type t or f. If you want to hit, type t. If you do not, type f"<<endl;
+			cin>>in;
+		}
+	if(in=='t'){
+		return 't';
+	}
+	else{
+		return 'f';
+	}
+
+}
+
+char Blackjack::endgame(){
+				char end=inputvalend();
 				if(end=='t'){
 	             return 't';
 				}
 				else{
 				cout<<"exiting game";
 				exit(0);
+				return 'f';
+				//exit(0);
 				}
 }
 
-int carddraw(){
+int Blackjack::carddraw(){
 
 	 vector<int>cd(3);
 
@@ -115,7 +174,7 @@ int carddraw(){
 
 
 
-string cardtype(int c){
+string Blackjack::cardtype(int c){
 	switch(c){
 	case 1:
 		return "Ace";
@@ -165,7 +224,7 @@ string cardtype(int c){
 }
 
 
-int cardtypev(int c){
+int Blackjack::cardtypev(int c){
 
 
 	switch(c){
@@ -225,39 +284,20 @@ int cardtypev(int c){
 	return 0;
 }
 
-int game(float mon){
-	float m=mon;
+void Blackjack::setmon(float b){
+	mon=b;
+}
+
+void Blackjack::setup(){
+	 pic1=carddraw();
+
+	 pic2=carddraw();
+
+     pcv=0;
+     dcv=0;
+     winnings=0;
 
 
-//brainstorm section:
-//use of vector to store values of drawn cards
-//reveals hidden card once player done hitting
-//need borlean value for cardgame playing in motion
-//need borlean value for hitting and standing
-
-	//deck of cards
-
-
-carddraw();
-
-carddraw();
-
-carddraw();
-
-	//player:
-//do-while loop for the player.
-bool playmotion=true;
-do{
-
-
-	//player card hand at start:
-	int pic1=carddraw();
-
-	int pic2=carddraw();
-
-	int pcv=0;
-
-	vector<string>player;
 
 	//cout<<"the first card is"<<pic1<<"the second one is"<<pic2;
 
@@ -280,13 +320,13 @@ do{
 
 	//dealer card intro:
 
-	int d1=carddraw();
+	 d1=carddraw();
 
-	int d2=carddraw();
+	 d2=carddraw();
 
-	int dcv=0;
 
-	vector<string>dealer;
+
+
 
 	cout<<"the dealer has pulled a "<<cardtype(d1)<<endl;
 
@@ -300,88 +340,89 @@ do{
 
 	dealer.push_back(cardtype(d2));
 
+	carddraw();
 
-	bool hit=true;
-	while(hit==true){                                                     //lets try to build user input
-    char in=inputval();
+	carddraw();
 
+	carddraw();
+
+}
+
+char Blackjack::hitloop(){
+	char in=inputval();
 	if(in=='t'){
-		int input=carddraw();
-		pcv+=cardtypev(input);
+			int input=carddraw();
+			pcv+=cardtypev(input);
 
-		player.push_back(cardtype(input));
+			player.push_back(cardtype(input));
 
-		cout<<"the cards currently in your hand are"<<endl;
-			for(int i=0; i<player.size(); i++){
-				cout<<player[i]<<endl;
-			}
-			cout<<"the value in you hand is "<<pcv<<endl;
+			cout<<"the cards currently in your hand are"<<endl;
+				for(int i=0; i<player.size(); i++){
+					cout<<player[i]<<endl;
+				}
+				cout<<"the value in you hand is "<<pcv<<endl;
 
-		//use rule that dealer hits until they reach a combined card value of 17:
-			if(dcv<17){
-				int din=carddraw();
-				dcv+=cardtypev(din);
-				dealer.push_back(cardtype(din));
-				cout<<"the value in the dealer's hand is(before reach 17): "<<dcv<<endl;
-			}
-			cout<<"the value in the dealer's hand is "<<dcv<<endl;
-
-	}
-	else{
-
-		break;
-		 hit=false;
-
-
-	}
-
-	}
-	//hitsection end here
-	cout<<"hello am at end";
-	cout<<"the value of pcv is"<<pcv;//i am not reaching the win condition
-	if((pcv<=21 && pcv>dcv)|| (pcv==21 && dcv>pcv)){    //won
-		cout<<"You just won:"<<m*29<<" dollars"<<endl;
-		char out=endgame();
-		if(out=='t'){
-			continue;
+			//use rule that dealer hits until they reach a combined card value of 17:
+				if(dcv<17){
+					int din=carddraw();
+					dcv+=cardtypev(din);
+					dealer.push_back(cardtype(din));
+					cout<<"the value in the dealer's hand is(before reach 17): "<<dcv<<endl;
+				}
+				cout<<"the value in the dealer's hand is "<<dcv<<endl;
+				return 't';
 		}
+	else{
+		cout<<"lets see what you won"<<endl;
+		return 'f';
+
+	}
+
+
+}
+
+
+
+char Blackjack::wincond(){
+
+	if(pcv>21){
+		cout<<"you just lost"<< mon*-1<< " dollars"<<endl;
+		winnings-=-mon;
+		cout<<"your current winnings are :"<<winnings<<endl;;
+				char out4=endgame();
+				return out4;
+
+	}
+
+
+	if((pcv<=21 && pcv>dcv)|| (pcv==21 && dcv>pcv)){    //won
+		cout<<"You just won:"<<mon*29<<" dollars"<<endl;
+		 winnings+=mon*29;
+
+		cout<<"your current winnings are :"<<winnings<<endl;;
+		char out1=endgame();
+       return out1;
+
 	}
 	//tie
 	if(pcv==dcv){
-		cout<<"tie";
-		char out=endgame();
-		if(out=='t'){
-		continue;
-				}
+		cout<<"tie"<<endl;
+		cout<<"your current winnings are :"<<winnings<<endl;
+		char out2=endgame();
+		 return out2;
 
 
 	}
 //lose
 	if((dcv<=21 && dcv>pcv)|| (dcv==21 && pcv>dcv)){          //this is not working
-		cout<< "you just lost"<< m*-1<< " dollars"<<endl;
-		char out=endgame();
-				if(out=='t'){
-				continue;
-						}
+		cout<< "you just lost"<< mon*-1<< " dollars"<<endl;
+		float lostlost=mon*-1;
+		winnings+=lostlost;
+		cout<<"your current winnings are :"<<winnings<<endl;
+		char out3=endgame();
+        return out3;
+
 
 	}
-
-	//cout<<"do you want to play again?(type y for yes and n for no):"<<endl;
-	//char end;
-	//	cin>>end;
-	//	while(end!='y' && end!='f'){
-	//		cout<<"you didn't type y or f. If you want to play again, type t. If you do not, type f"<<endl;
-	//		cin>>end;
-	//	}
-	//if(end=='t'){
-
-	//}
-	//else{
-	//playmotion=false;
-	//exit(0);
-	//}
-}while(playmotion==true);
-
-	//if win:
-return 0;
+	return 'f';
 }
