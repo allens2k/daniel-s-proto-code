@@ -1,0 +1,165 @@
+import random
+
+class Blackjack:
+    def __init__(self):
+        self.dcv = 0  # dealer card value
+        self.pcv = 0  # player card value
+        self.pic1 = 0  # player card 1
+        self.pic2 = 0  # player card 2
+        self.player = []  # player hand
+        self.d1 = 0  # dealer card 1
+        self.d2 = 0  # dealer card 2
+        self.dealer = []  # dealer hand
+        self.mon = 0.0  # player money
+        self.winnings = 0.0  # winnings from the game
+
+    def setup(self):
+        self.pic1 = self.carddraw()
+        self.pic2 = self.carddraw()
+        self.pcv = 0
+        self.dcv = 0
+        self.winnings = 0
+
+        print(f"You have a {self.cardtype(self.pic1)} and a {self.cardtype(self.pic2)} in your hand.")
+        self.pcv += self.cardtypev(self.pic1)
+        self.pcv += self.cardtypev(self.pic2)
+        print(f"The value in your hand is {self.pcv}")
+        
+        self.player = [self.cardtype(self.pic1), self.cardtype(self.pic2)]
+        print("The cards currently in your hand are:")
+        for card in self.player:
+            print(card)
+
+        # Dealer cards
+        self.d1 = self.carddraw()
+        self.d2 = self.carddraw()
+
+        print(f"The dealer has pulled a {self.cardtype(self.d1)}")
+        self.dcv += self.cardtypev(self.d1)
+        self.dcv += self.cardtypev(self.d2)
+        print(f"The value in the dealer's hand is {self.dcv}")
+
+        self.dealer = [self.cardtype(self.d1), self.cardtype(self.d2)]
+
+    def carddraw(self):
+        """Draw a random card (1-13)."""
+        return random.randint(1, 13)
+
+    def cardtype(self, c):
+        """Return the card's name based on its number (1 = Ace, 11 = King, etc.)."""
+        card_names = {
+            1: "Ace", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 
+            9: "9", 10: "10", 11: "King", 12: "Queen", 13: "Jack"
+        }
+        return card_names.get(c, "Unknown card")
+
+    def cardtypev(self, c):
+        """Return the card's value for Blackjack scoring."""
+        if c in [1, 11, 12, 13]:
+            return 10
+        return c
+
+    def inputval(self):
+        """Ask player if they want to hit."""
+        while True:
+            in_choice = input("Do you want to hit? (t for yes, f for no): ").lower()
+            if in_choice in ['t', 'f']:
+                return in_choice
+            print("Invalid input, please type 't' for yes or 'f' for no.")
+
+    def inputvalend(self):
+        """Ask player if they want to play again."""
+        while True:
+            in_choice = input("Do you want to play again? (t for yes, f for no): ").lower()
+            if in_choice in ['t', 'f']:
+                return in_choice
+            print("Invalid input, please type 't' for yes or 'f' for no.")
+
+    def endgame(self):
+        """Handle endgame decision to quit or continue."""
+        if self.inputvalend() == 't':
+            return 't'
+        else:
+            print("Exiting game.")
+            exit(0)
+
+    def hitloop(self):
+        """Loop for player to choose whether to hit or stand."""
+        in_choice = self.inputval()
+        if in_choice == 't':
+            input_card = self.carddraw()
+            self.pcv += self.cardtypev(input_card)
+            self.player.append(self.cardtype(input_card))
+            print("The cards currently in your hand are:")
+            for card in self.player:
+                print(card)
+            print(f"The value in your hand is {self.pcv}")
+
+            # Dealer hits until their hand is worth 17 or more
+            while self.dcv < 17:
+                din = self.carddraw()
+                self.dcv += self.cardtypev(din)
+                self.dealer.append(self.cardtype(din))
+                print(f"The value in the dealer's hand is {self.dcv} (before reaching 17)")
+
+            print(f"The value in the dealer's hand is {self.dcv}")
+            return 't'
+        else:
+            print("Let's see what you won.")
+            return 'f'
+
+    def wincond(self):
+        """Check win conditions."""
+        if self.pcv > 21:
+            print(f"You lost {self.mon * -1} dollars")
+            self.winnings -= self.mon
+            print(f"Your current winnings are: {self.winnings}")
+            return self.endgame()
+
+        if (self.pcv <= 21 and self.pcv > self.dcv) or (self.pcv == 21 and self.dcv > self.pcv):  # won
+            print(f"You won: {self.mon * 29} dollars")
+            self.winnings += self.mon * 29
+            print(f"Your current winnings are: {self.winnings}")
+            return self.endgame()
+
+        # tie
+        if self.pcv == self.dcv:
+            print("Tie")
+            print(f"Your current winnings are: {self.winnings}")
+            return self.endgame()
+
+        # lost
+        if (self.dcv <= 21 and self.dcv > self.pcv) or (self.dcv == 21 and self.pcv > self.dcv):
+            print(f"You lost {self.mon * -1} dollars")
+            self.winnings -= self.mon
+            print(f"Your current winnings are: {self.winnings}")
+            return self.endgame()
+
+
+def main():
+    # Introduction
+    name = input("Welcome to the Hands On Casino! What is your name, dear customer? ")
+    money = float(input(f"Hello {name}. How much money do you want to spend at our fine establishment ($1 minimum bet): "))
+    
+    while money < 1:
+        money = float(input("Please enter at least $1 to make a bet: "))
+
+    print(f"You entered {money}")
+
+    game = Blackjack()
+    game.mon = money
+
+    gameloop1 = 't'
+    gameloop2 = 't'
+
+    while gameloop1 == 't':
+        game.setup()
+        while gameloop2 == 't':
+            gameloop2 = game.hitloop()
+
+        game.wincond()
+        gameloop1 = game.inputvalend()
+
+
+if __name__ == "__main__":
+    main()
